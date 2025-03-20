@@ -17,8 +17,10 @@
     font-family: "Montserrat", sans-serif;
 }
 body{
-    background: url("https://www.iotm2mcouncil.org/wp-content/uploads/2021/03/marblog2.jpg") no-repeat center fixed;
+    background: url("https://images.pexels.com/photos/1435904/pexels-photo-1435904.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2") no-repeat fixed;
     background-size: cover;
+    background-position: center;
+    transition: 0.5s;
 }
 nav{
     background: var(--navbgcolor);
@@ -38,7 +40,6 @@ nav .navlist-fullwidth{
     top: 0.5rem;
     right: 0;
     max-width: 700px;
-   
 }
 nav .navlist-reducedwidth{
     padding: 1rem;
@@ -52,13 +53,28 @@ nav .navlist-reducedwidth{
     box-shadow: inset 1px 1px 5px #888, inset -1px -1px 5px #888;
     display: none;
 }
-nav .navlist-fullwidth li{
+nav .navlist-fullwidth li, nav .navlist-fullwidth li::before{
     display: inline-block;
     width: 7rem;
     text-align: center;
     padding: 0.5rem 0.5rem 0.5rem 1.5rem;
     background: rgba(0, 100, 0, 0.7);
     border-radius: 25px;
+    transition: 0.3s;
+    position: relative;
+}
+nav .navlist-fullwidth li::before{
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 100%;
+    padding: 0;
+    background: transparent;
+    box-sizing: content-box;
+    border-bottom: 2px solid white;
+    border-radius: 0;
+    left: 0;
+    top: 0;
 }
 nav .navlist-reducedwidth li{
     padding: 0.5rem 1rem;
@@ -89,11 +105,17 @@ nav .navlist-fullwidth li a svg{
     transform: translate(-125%, -15%);
 }
 nav .navlist-fullwidth li:hover{
-    background: white;
+    background: transparent;
 }
-nav .navlist-fullwidth li:hover a{
+nav .navlist-fullwidth li:hover::before{
+    width: 7rem;
+}
+/* nav .navlist-fullwidth li:hover a{
     color: green;
 }
+nav .navlist-fullwidth li:hover a svg{
+    fill: green;
+} */
 #navlistbtn{
     border: none;
     outline: none;
@@ -165,8 +187,15 @@ function toggleNavlist(){
 
 function toggleSideBar(){
     const aside = document.getElementById("sidebar");
-    console.log(aside.style.transform);
-    aside.style.transform = (aside.style.transform == "translate(-100%, 0px)")?"translate(0, 0)":"translate(-100%, 0)"
+    const body = document.querySelector("body");
+    if(aside.style.transform == "" || aside.style.transform.length != aside.style.transform.replace("-100%", "").length) {
+        aside.style.transform = "translate(0, 0)";
+        body.style.backgroundPositionX = "300px";
+    }
+    else{
+        aside.style.transform = "translate(-100%, 0)";
+        body.style.backgroundPositionX = "0";
+    }
 }
 
     </script>
