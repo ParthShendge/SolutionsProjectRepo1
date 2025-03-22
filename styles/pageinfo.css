@@ -1,0 +1,9 @@
+#page-info-container{
+    padding: 5rem;
+    margin: 1rem;
+    border-radius: 10px;
+    background: white url("Images/vine_vector_bg.png");
+    background-size: cover;
+    color: #000;
+    font-weight: 500;
+}
