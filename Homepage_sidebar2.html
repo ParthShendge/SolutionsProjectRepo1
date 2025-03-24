@@ -206,13 +206,16 @@ nav .navlist-fullwidth li:hover::before{
 #sidebar-tablist li{
     padding: 0.5rem 1rem;
     border-radius: 5px;
-    background: linear-gradient(45deg, rgba(100, 255, 100, 0.2) 49%, rgba(80, 150, 80, 0.5) 50%);
+    background: linear-gradient(45deg, rgba(9, 125, 9, 0.9) 49%, rgba(0, 0, 0, 0.5) 50%);
     /* background: rgba(100, 255, 100, 0.3); */
     color: white;
     margin: 0.5rem 0;
     font-size: 0.9rem;
     border: 1px solid transparent;
     user-select: none;
+    box-shadow: inset 1px 1px 15px rgba(0, 50, 0, 0.9);
+    text-shadow: 1px 1px 2px #000;
+    border: 1px solid green;
 }
 #sidebar-tablist li:hover{
     background: linear-gradient(45deg, rgba(80, 150, 80, 0.9) 49%, rgba(100, 255, 100, 0.3) 49%);
@@ -224,6 +227,43 @@ nav .navlist-fullwidth li:hover::before{
     right: 0;
     top: 4rem;
     transition: var(--sidebarTransitionTime);
+}
+#pop-up-container{
+    width: 80%;
+    max-width: 500px;
+    padding: 2rem;
+    position: fixed;
+    transform: translate(-50%, -50%); 
+    top: 50%;
+    left: 50%;
+    background: white;
+    border-radius: 10px;
+    z-index: 1000;
+    display: none;
+    font-size: 0.8rem;
+    box-shadow: inset 1px 1px 5px #555;
+}
+#pop-up-textbox{
+    margin-bottom: 2rem;
+    text-align: center;
+    font-weight: 500;
+    text-shadow: 1px 1px 2px #888;
+}
+#pop-up-button-container{
+    display: flex;
+    justify-content: space-around;
+}
+#pop-up-button-container button{
+    padding: 0.25rem 0.5rem;
+    outline: none;
+    border: none;
+    font-weight: 400;
+    background: #44f;
+    border-radius: 5px;
+    color: white;
+    box-shadow: 1px 1px 5px #555,
+    inset 1px 1px 5px rgb(20, 20, 230);
+    text-shadow: 1px 2px 1px rgb(20, 20, 230);
 }
 
 footer{
@@ -244,7 +284,9 @@ footer h6{
     }
 }
 
-
+#some-other-container{
+    height: 80vh;
+}
 </style>
 </head>
 <body>
@@ -276,6 +318,7 @@ footer h6{
     </aside>
 
     <div id="main-container">
+        <section id="some-other-container"></section>
 
         <section id="page-info-container">
             This is my website.
@@ -354,14 +397,30 @@ footer h6{
             <h6 id="copyright-display">&copy; 2025 Company Name. All Rights Reserved</h6>
         </footer>
     </div>
+    <div id="pop-up-container">
+        <p id="pop-up-textbox"></p>
+        <div id="pop-up-button-container">
+            <button id="pop-up-cancel-button">Cancel</button>
+            <button id="pop-up-confirm-button">Confirm</button>
+        </div>
+    </div>
     <script>
 
 window.onload = ()=>{
+    notify("Page Loaded SuccessFully. Please allow us to locate you by giving location access. By clicking on cancel you can skip this step and enter the location of farm manually from the profile menu.", ()=>{console.log("user cancelled autolocate")}, ()=>{console.log("user confirmed autolocate")});
     if (window.innerWidth < 600 ){
         document.getElementById("navlistbtn").style.display = "inline";
         document.querySelector(".navlist-fullwidth").setAttribute("class", "navlist-reducedwidth");
         document.getElementById("sidebar").style.transform = "translate(-100%, 0)";
         document.getElementById("main-container").style.width = "100%";
+    }
+    try{
+        navigator.geolocation.getCurrentPosition((position)=>{
+            document.getElementById("farm-location-display").innerText = "Latitude   : "+position.coords.latitude.toPrecision(5) +" Longitude : "+ position.coords.longitude.toPrecision(5);
+        });
+    }
+    catch(e){
+        notify("Failed to locate you . Would you like to enter location of the farm manually");
     }
 }
 
@@ -383,6 +442,24 @@ function toggleSideBar(){
     else{
         aside.style.transform = "translate(-100%, 0)";
         mainContainer.style.width = "100%";
+    }
+}
+
+function notify(message, oncancel, onconfirm){
+    document.getElementById("pop-up-textbox").innerText = message;
+    document.getElementById("pop-up-container").style.display = "block";
+    document.getElementById("pop-up-cancel-button").onclick = ()=>{
+        document.getElementById("pop-up-container").style.display = "none";
+        oncancel();
+    }
+    if(onconfirm != undefined){
+        document.getElementById("pop-up-confirm-button").onclick = ()=>{
+            document.getElementById("pop-up-container").style.display = "none";
+            onconfirm();
+        }
+    }
+    else{
+
     }
 }
 
